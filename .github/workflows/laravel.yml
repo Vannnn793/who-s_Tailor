@@ -19,23 +19,28 @@ jobs:
           php-version: '8.0'
           extensions: mbstring, dom, pdo_sqlite, sqlite3
 
+      - name: Install Dependencies
+        run: composer install --no-scripts --prefer-dist
+
       - name: Copy .env
         run: cp .env.example .env
 
+      - name: Configure Database Connection
+        run: |
+          sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
+          sed -i 's|^DB_DATABASE=.*|DB_DATABASE=${{ github.workspace }}/database/database.sqlite|' .env
+
       - name: Generate Key
         run: php artisan key:generate
-
-      - name: Install Dependencies
-        run: composer install --no-scripts --prefer-dist
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
       - name: Create SQLite Database
-        run: touch database/database.sqlite
+        run: mkdir -p database && touch database/database.sqlite
 
-      - name: Configure Database Connection
-        run: echo "DB_CONNECTION=sqlite" >> .env && echo "DB_DATABASE=${PWD}/database/database.sqlite" >> .env
+      - name: Clear config
+        run: php artisan config:clear
 
       - name: Config Cache
         run: php artisan config:cache
@@ -45,3 +50,7 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
         run: php artisan test
+
+      - name: Show Laravel logs if failed
+        if: failure()
+        run: cat storage/logs/laravel.log || echo "No laravel log found"
