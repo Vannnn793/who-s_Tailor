@@ -3,7 +3,7 @@ name: Deploy ke Ubuntu Server
 on:
   push:
     branches:
-      - master  # ganti kalau kamu pakai 'main'
+      - main  # atau 'master', sesuaikan dengan branch-mu
 
 jobs:
   deploy:
@@ -27,11 +27,23 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy Laravel Project
+      - name: Deploy ke Server JKT (103.183.74.167)
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@103.183.74.167 << 'EOF'
             cd ~/myapp
-            git pull origin master
+            git pull origin main
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+          EOF
+
+      - name: Deploy ke Server SGP (103.250.10.33)
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@103.250.10.33 << 'EOF'
+            cd ~/myapp
+            git pull origin main
             composer install --no-interaction --prefer-dist --optimize-autoloader
             php artisan migrate --force
             php artisan config:cache
