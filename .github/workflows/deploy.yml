@@ -1,0 +1,23 @@
+name: Deploy ke Ubuntu Server
+
+on:
+  push:
+    branches:
+      - master  # ganti kalau kamu pakai 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy ke Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@103.183.74.167 "cd /home/ubuntu/myapp && git pull origin master"
