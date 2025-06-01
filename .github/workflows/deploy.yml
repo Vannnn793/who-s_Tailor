@@ -18,6 +18,14 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy ke Server
+      - name: Deploy Laravel Project
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@103.183.74.167 "cd ~/myapp && git pull origin master"
+          ssh -o StrictHostKeyChecking=no ubuntu@103.183.74.167 << 'EOF'
+            cd ~/myapp
+            git pull origin master
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+          EOF
