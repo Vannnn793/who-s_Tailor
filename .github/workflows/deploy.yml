@@ -20,4 +20,4 @@ jobs:
 
       - name: Deploy ke Server
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@103.183.74.167 "cd /home/ubuntu/myapp && git pull origin master"
+          ssh -o StrictHostKeyChecking=no ubuntu@103.183.74.167 "cd ~/myapp && git pull origin master"
