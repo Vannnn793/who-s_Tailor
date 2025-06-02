@@ -59,7 +59,8 @@ public function create(Request $request)
             })->toArray());
         }
 
-        $finalPrice = $basePrice + $extraPrice;
+        $finalPrice = ($basePrice + $extraPrice) * $request->jumlah;
+
 
         // Buat order di DB
         $order = Order::create([
@@ -88,8 +89,8 @@ public function create(Request $request)
             ],
             'item_details' => array_merge([[
                 'id' => 'produk-' . $tailor->id,
-                'price' => $basePrice,
-                'quantity' => 1,
+                'price' => $basePrice+$extraPrice,
+                'quantity' => (int)$request->jumlah,
                 'name' => 'Pemesanan: ' . $tailor->name,
             ]], $extraItems),
             'customer_details' => [

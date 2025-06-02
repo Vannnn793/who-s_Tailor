@@ -35,9 +35,9 @@
                 </p></td>
                 
                 <td>
-                    <a href="{{ route('orders.payment', $order->id) }}">Bayar</a>
-                    <a href="{{ asset('storage/'.$order->design) }}" target="_blank">Lihat Desain</a>
-                    <a href="{{ route('rmv',["id" => $order -> id]) }}">Hapus
+                    <a href="{{ route('orders.payment', $order->id) }}"><button class="btn btn-primary">Bayar</button></a>
+                    <a href="{{ asset('storage/'.$order->design) }}" target="_blank"><button class="btn btn-primary">Lihat Desain</button></a>
+                    <a href="{{ route('rmv',["id" => $order -> id]) }}"><button class="btn btn-primary">Hapus</button>
                     </a>
                 </td>
             </tr>
